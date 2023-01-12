@@ -24,12 +24,11 @@ void ShineMqtt::mqttSetup(const MqttConfig& config) {
 
 String ShineMqtt::getId() {
 #ifdef ESP8266
-  uint64_t id = ESP.getChipId();
+  uint32_t id = ESP.getChipId();
 #elif ESP32
-  uint64_t id = ESP.getEfuseMac();
+  uint32_t id = ESP.getEfuseMac();
 #endif
-
-  return String("Growatt" + id);
+  return "Growatt" + String(id);
 }
 
 // -------------------------------------------------------
