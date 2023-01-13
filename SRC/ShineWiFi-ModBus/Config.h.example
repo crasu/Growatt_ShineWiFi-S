@@ -12,7 +12,7 @@
 #define GROWATT_MODBUS_VERSION 124
 
 // Setting this define to 0 will disable the MQTT functionality
-#define MQTT_SUPPORTED 1
+#define MQTT_SUPPORTED 0
 // Define the MQTT max packet size here. This only needs to be done for sake of
 // ArduinoIDE compatibility. PlatformIO sets the MQTT_MAX_PACKET_SIZE in platformio.ini
 #ifndef MQTT_MAX_PACKET_SIZE
