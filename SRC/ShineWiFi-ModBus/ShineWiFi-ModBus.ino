@@ -279,6 +279,8 @@ void setup()
     }
     #endif
 
+    wm.autoConnect();
+    
     WiFi.hostname(HOSTNAME);
     WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
 
@@ -572,8 +574,15 @@ void loop()
             Serial.println("Config after boot started");
         #endif
         wm.setConfigPortalTimeout(CONFIG_PORTAL_MAX_TIME_SECONDS);
+
+        wm.setShowStaticFields(true);
+        wm.setShowDnsFields(true);
         wm.startConfigPortal("GrowattConfig", APPassword);
+
         digitalWrite(LED_BL, 0);
+        delay(3000);
+
+        wm.autoConnect();
         delay(3000);
         ESP.restart();
     }
