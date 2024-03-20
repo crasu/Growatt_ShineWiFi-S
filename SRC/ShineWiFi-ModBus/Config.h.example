@@ -58,6 +58,9 @@
 #define SIMULATE_INVERTER 0
 #define SIMULATE_DEVICE ShineWiFi_X
 
+// This overwrites the stick type autodetection
+#define HARDCODED_STICK_TYPE ShineWiFi_X
+
 // Data of the Wifi access point
 // Default IP 192.168.4.1
 // Hold down the Button for a few seconds to enter Access Point mode
@@ -95,6 +98,8 @@
 #if ENABLE_AP_BUTTON == 1
     #define AP_BUTTON_PRESSED analogRead(A0)<50
 #endif
+
+
 
 // Enabling this will make the wifiManager available on the previously configured wifi and ip.
 // This makes it possible to reconnfigure the stick without a direct WIFI connection. This is

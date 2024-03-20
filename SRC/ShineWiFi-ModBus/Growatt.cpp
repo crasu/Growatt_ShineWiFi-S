@@ -77,12 +77,18 @@ void Growatt::begin(Stream& serial) {
    */
 #if SIMULATE_INVERTER == 1
   _eDevice = SIMULATE_DEVICE;
+#elifdef HARDCODED_STICK_TYPE
+  _eDevice = HARDCODED_STICK_TYPE;
+  uint64_t speed = _eDevice == ShineWiFi_S ? 9600 : 115200;
+  Serial.begin(speed);
+  Modbus.begin(1, serial);
 #else
   uint8_t res;
   // init communication with the inverter
   Serial.begin(9600);
   Modbus.begin(1, serial);
   res = Modbus.readInputRegisters(0, 1);
+
   if (res == Modbus.ku8MBSuccess) {
     _eDevice = ShineWiFi_S;  // Serial
   } else {
