@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'release/*'
   pull_request:
     types: [assigned, opened, synchronize, reopened]
 
@@ -12,21 +14,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Cache pip
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Cache PlatformIO
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
     - name: Install PlatformIO
       run: |
         python -m pip install --upgrade pip
@@ -35,4 +37,33 @@ jobs:
       run: |
         cp "SRC/ShineWiFi-ModBus/Config.h.example" "SRC/ShineWiFi-ModBus/Config.h"
     - name: Run PlatformIO
-      run: pio run -e ShineWifiX -e lolin32 -e nodemcu-32s
+      run: pio run -e ShineWifiX -e ShineWifiS -e lolin32 -e nodemcu-32s -e d1
+    - name: Adjust firmware filename
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        mkdir release
+        mv .pio/build/lolin32/firmware.bin release/firmware-lolin32.bin
+        mv .pio/build/ShineWifiX/firmware.bin release/firmware-ShineWifiX.bin
+        mv .pio/build/ShineWifiS/firmware.bin release/firmware-ShineWifiS.bin
+        mv .pio/build/nodemcu-32s/firmware.bin release/firmware-nodemcu-32s.bin
+        mv .pio/build/d1/firmware.bin release/firmware-d1.bin
+    - name: Prepare config for TLXH inverters
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        sed -i -e "s/GROWATT_MODBUS_VERSION 124/GROWATT_MODBUS_VERSION 3000/g" "SRC/ShineWiFi-ModBus/Config.h"
+    - name: Run PlatformIO for TLXH inverters
+      if: startsWith(github.ref, 'refs/tags/')
+      run: pio run -e ShineWifiX -e ShineWifiS -e lolin32 -e nodemcu-32s -e d1
+    - name: Adjust firmware filename for TLXH inverters
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        mv .pio/build/lolin32/firmware.bin release/firmware-lolin32-TLXH.bin
+        mv .pio/build/ShineWifiX/firmware.bin release/firmware-ShineWifiX-TLXH.bin
+        mv .pio/build/nodemcu-32s/firmware.bin release/firmware-nodemcu-32s-TLXH.bin
+        mv .pio/build/d1/firmware.bin release/firmware-d1-TLXH.bin
+    - name: Release
+      uses: fnkr/github-action-ghr@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GHR_PATH: release/
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,26 @@
+
+<!-- Please do not post feature requests as issues. Use the forum to discuss suggestions for new features or open a PR -->
+
+# What happened?
+Also tell us, what did you expect to happen? Tell us what you see!
+
+# Stick type
+
+What Stick type are you using?
+- Shine X
+- Shine S
+- Lolin32
+- Nodemcu32
+- Other 
+
+Which Inverter are you using?
+- MIC-1000-TL-X
+- SPH-3000 BL-UP
+- ....
+
+# Log output
+Please copy and paste any relevant log output from /debug and the serial console (You have to compile the firmware with the relevant settings in Config.h to get the output).
+
+```
+Insert logs here
+```
